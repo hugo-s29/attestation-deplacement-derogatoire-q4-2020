@@ -1,5 +1,6 @@
 import { generateQR } from './util'
 import { PDFDocument, StandardFonts } from 'pdf-lib'
+import { storeData } from './storage'
 
 const ys = {
   travail: 578,
@@ -31,6 +32,16 @@ export async function generatePdf (profile, reasons, pdfBase) {
     datesortie,
     heuresortie,
   } = profile
+
+  storeData({
+    lastname,
+    firstname,
+    birthday,
+    placeofbirth,
+    address,
+    zipcode,
+    city,
+  })
 
   const data = [
     `Cree le: ${creationDate} a ${creationHour}`,
@@ -74,11 +85,9 @@ export async function generatePdf (profile, reasons, pdfBase) {
   drawText(placeofbirth, 297, 674)
   drawText(`${address} ${zipcode} ${city}`, 133, 652)
 
-  reasons
-    .split(', ')
-    .forEach(reason => {
-      drawText('x', 78, ys[reason], 18)
-    })
+  reasons.split(', ').forEach((reason) => {
+    drawText('x', 78, ys[reason], 18)
+  })
 
   let locationSize = getIdealFontSize(font, profile.city, 83, 7, 11)
 
